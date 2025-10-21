@@ -223,7 +223,7 @@ int main()
 
     vector <pair<int,int>> ans = fst.create_backbone_tree();
 
-    cout<<ans.size()<<endl;
+    // cout<<ans.size()<<endl;
 
     for(auto& i : ans)
     {
