@@ -5,6 +5,7 @@
 #include <chrono>
 #include <sstream>
 #include <iomanip>
+#include <unordered_map>
 #include "social_network.hpp"
 
 using namespace std;
@@ -210,6 +211,77 @@ vector<pair<time_t, string>> Social_network::posts_of_friends(const string & nam
     return posts;
 }
 
+int Social_network::find_way(const string& name1, const string& name2)
+{
+
+    auto name1_it = find_if(users.begin(), users.end(), [&name1](shared_ptr<User> user_ptr){
+        return user_ptr->get_id() == name1;
+    });
+
+    if(name1_it == users.end())
+    {
+        throw("Пользователя "+name1+" не существует");
+    }
+
+    auto name2_it = find_if(users.begin(), users.end(), [&name2](shared_ptr<User> user_ptr){
+        return user_ptr->get_id() == name2;
+    });
+
+    if(name2_it == users.end())
+    {
+        throw("Пользователя "+name2+" не существует");
+    }
+
+    vector <shared_ptr<User>> queue;
+
+    unordered_map <string, string> parents;
+
+    parents.emplace(name1, "000");
+
+    for(const auto i : (*name1_it)->get_friends())
+    {
+        queue.push_back(i);
+        parents.emplace(i->get_id(), name1);
+    }
+
+    while(queue.size()>0)
+    {
+        auto i = queue.front();
+        queue.erase(queue.begin());
+        
+        if(i->get_id() == name2)
+            break;
+
+        for(const auto j : i->get_friends())
+        {
+            if(parents.count(j->get_id()) == 0)
+            {
+                queue.push_back(j);
+                parents.emplace(j->get_id(), i->get_id());
+            }
+        }        
+    }
+
+    if(parents.count(name2) == 0)
+    {
+        cout<<"Пути не существует"<<endl;
+        return -1;
+    }
+    else
+    {
+        string nex = name2;
+        int count = 0;
+        while(parents[nex] != "000")
+        {
+            nex = parents[nex];
+            count++;
+        }
+        cout<<count<<endl;
+        return count;
+    }
+
+}
+
 void Social_network::check_users()
 {
     for(auto i : this->users)
@@ -283,6 +355,8 @@ int main()
 
     // Soc.check_users();
     Soc.posts_of_friends("sasha",Social_network::Type_of_lenta::FRIENDS_OF_FRIENDS);
+
+    Soc.find_way("vasya", "bolik");
 
     return 0;
 }
