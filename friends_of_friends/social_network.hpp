@@ -38,6 +38,7 @@ public:
     static bool isAlphanumericRegex(const std::string& str);
     static std::time_t parse_iso8601(const std::string & date);
     std::vector <std::pair<std::time_t, std::string>> posts_of_friends(const std::string& name_user, Type_of_lenta type_lenta);
+    int find_way(const std::string& name1, const std::string& name2);
 };
 
 std::vector<std::string> splitBySpaces(const std::string& str);
