@@ -134,14 +134,12 @@ time_t Social_network::parse_iso8601(const std::string& date)
     std::tm tm = {};
     std::istringstream ss(date);
     
-    // Парсим ISO8601 формат: 2023-10-25T14:30:45
     ss >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%S");
     
     if (ss.fail()) {
         throw std::runtime_error("Failed to parse ISO8601 date: " + date);
     }
     
-    // Преобразуем tm в time_t
     std::time_t time_t_val = std::mktime(&tm);
     return time_t_val;
 }
